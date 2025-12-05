@@ -19,6 +19,7 @@ static int g_client_socket = -1; // Глобальный дескриптор принятого соединения
 
 // Обработчик сигнала SIGHUP
 void handle_sighup(int signo) {
+    (void)signo;
     g_got_sighup = 1; // Устанавливаем флаг для обработки
 }
 
