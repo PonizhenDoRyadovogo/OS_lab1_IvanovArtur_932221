@@ -1,4 +1,4 @@
-#define _POSIX_C_SOURCE 200809L  //без этой строчки ничего не работало
+п»ї#define _POSIX_C_SOURCE 200809L  //Р±РµР· СЌС‚РѕР№ СЃС‚СЂРѕС‡РєРё РЅРёС‡РµРіРѕ РЅРµ СЂР°Р±РѕС‚Р°Р»Рѕ
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,19 +11,19 @@
 #include <netinet/in.h>
 #include <sys/select.h>
 
-#define PORT      65000 // устанавливаем порт
+#define PORT      65000 // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕСЂС‚
 
-static volatile sig_atomic_t g_got_sighup = 0; // Глобальная переменная-флаг для обработки сигнала SIGHUP
-static int g_server_socket = -1; // Глобальный дескриптор "сервера"
-static int g_client_socket = -1; // Глобальный дескриптор принятого соединения
+static volatile sig_atomic_t g_got_sighup = 0; // Р“Р»РѕР±Р°Р»СЊРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ-С„Р»Р°Рі РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРёРіРЅР°Р»Р° SIGHUP
+static int g_server_socket = -1; // Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ "СЃРµСЂРІРµСЂР°"
+static int g_client_socket = -1; // Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ РїСЂРёРЅСЏС‚РѕРіРѕ СЃРѕРµРґРёРЅРµРЅРёСЏ
 
-// Обработчик сигнала SIGHUP
+// РћР±СЂР°Р±РѕС‚С‡РёРє СЃРёРіРЅР°Р»Р° SIGHUP
 void handle_sighup(int signo) {
     (void)signo;
-    g_got_sighup = 1; // Устанавливаем флаг для обработки
+    g_got_sighup = 1; // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј С„Р»Р°Рі РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё
 }
 
-// Утилитарная функция “умереть с ошибкой”
+// РЈС‚РёР»РёС‚Р°СЂРЅР°СЏ С„СѓРЅРєС†РёСЏ вЂњСѓРјРµСЂРµС‚СЊ СЃ РѕС€РёР±РєРѕР№вЂќ
 void die(const char* msg) {
     perror(msg);
     exit(EXIT_FAILURE);
@@ -31,43 +31,43 @@ void die(const char* msg) {
 
 int main(void)
 {
-    struct sigaction sa; // Структура для настройки обработчика сигнала
-    memset(&sa, 0, sizeof(sa)); // Обнуляем структуру
-    sa.sa_handler = handle_sighup; // Указываем функцию-обработчик
-    sigemptyset(&sa.sa_mask); // Очищае маску сигналов, которые должны блокироваться
+    struct sigaction sa; // РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РЅР°СЃС‚СЂРѕР№РєРё РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРёРіРЅР°Р»Р°
+    memset(&sa, 0, sizeof(sa)); // РћР±РЅСѓР»СЏРµРј СЃС‚СЂСѓРєС‚СѓСЂСѓ
+    sa.sa_handler = handle_sighup; // РЈРєР°Р·С‹РІР°РµРј С„СѓРЅРєС†РёСЋ-РѕР±СЂР°Р±РѕС‚С‡РёРє
+    sigemptyset(&sa.sa_mask); // РћС‡РёС‰Р°Рµ РјР°СЃРєСѓ СЃРёРіРЅР°Р»РѕРІ, РєРѕС‚РѕСЂС‹Рµ РґРѕР»Р¶РЅС‹ Р±Р»РѕРєРёСЂРѕРІР°С‚СЊСЃСЏ
     sa.sa_flags = 0;
 
-    // Устанавливаем обработчик сигнала SIGHUP
-    if (sigaction(SIGHUP, &sa, NULL) == -1) {// Если установка обработчика завершилась ошибкой
-        die("sigaction"); // Завершаем выполнение программы
+    // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРє СЃРёРіРЅР°Р»Р° SIGHUP
+    if (sigaction(SIGHUP, &sa, NULL) == -1) {// Р•СЃР»Рё СѓСЃС‚Р°РЅРѕРІРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° Р·Р°РІРµСЂС€РёР»Р°СЃСЊ РѕС€РёР±РєРѕР№
+        die("sigaction"); // Р—Р°РІРµСЂС€Р°РµРј РІС‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹
     }
 
-    sigset_t blocked_signals, orig_mask; // Множество сигналов, которые мы хотим заблокировать, а также маска
-    sigemptyset(&blocked_signals); // Очищаем множество
-    sigaddset(&blocked_signals, SIGHUP); // Добавляем в множество сигнал SIGHUP
+    sigset_t blocked_signals, orig_mask; // РњРЅРѕР¶РµСЃС‚РІРѕ СЃРёРіРЅР°Р»РѕРІ, РєРѕС‚РѕСЂС‹Рµ РјС‹ С…РѕС‚РёРј Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ, Р° С‚Р°РєР¶Рµ РјР°СЃРєР°
+    sigemptyset(&blocked_signals); // РћС‡РёС‰Р°РµРј РјРЅРѕР¶РµСЃС‚РІРѕ
+    sigaddset(&blocked_signals, SIGHUP); // Р”РѕР±Р°РІР»СЏРµРј РІ РјРЅРѕР¶РµСЃС‚РІРѕ СЃРёРіРЅР°Р» SIGHUP
 
-    if (sigprocmask(SIG_BLOCK, &blocked_signals, &orig_mask) == -1) {// Если блокировка завершилась ошибкой
+    if (sigprocmask(SIG_BLOCK, &blocked_signals, &orig_mask) == -1) {// Р•СЃР»Рё Р±Р»РѕРєРёСЂРѕРІРєР° Р·Р°РІРµСЂС€РёР»Р°СЃСЊ РѕС€РёР±РєРѕР№
         die("sigprocmask");
     }
 
-    // Создаем серверный сокет
-    g_server_socket = socket(AF_INET, SOCK_STREAM, 0); // Если создание сокета завершилось ошибкой
+    // РЎРѕР·РґР°РµРј СЃРµСЂРІРµСЂРЅС‹Р№ СЃРѕРєРµС‚
+    g_server_socket = socket(AF_INET, SOCK_STREAM, 0); // Р•СЃР»Рё СЃРѕР·РґР°РЅРёРµ СЃРѕРєРµС‚Р° Р·Р°РІРµСЂС€РёР»РѕСЃСЊ РѕС€РёР±РєРѕР№
     if (g_server_socket == -1) {
         die("socket");
     }
 
-    struct sockaddr_in addr; // Структура для хранения адреса сервера
-    memset(&addr, 0, sizeof(addr)); // Очищаем структуру
-    addr.sin_family = AF_INET; // Используем IPv4
-    addr.sin_port = htons(PORT); // Преобразуем порт в сетевой порядок байтов
-    addr.sin_addr.s_addr = htonl(INADDR_ANY); // Разрешаем подключение с любого IP-адреса
+    struct sockaddr_in addr; // РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Р°РґСЂРµСЃР° СЃРµСЂРІРµСЂР°
+    memset(&addr, 0, sizeof(addr)); // РћС‡РёС‰Р°РµРј СЃС‚СЂСѓРєС‚СѓСЂСѓ
+    addr.sin_family = AF_INET; // РСЃРїРѕР»СЊР·СѓРµРј IPv4
+    addr.sin_port = htons(PORT); // РџСЂРµРѕР±СЂР°Р·СѓРµРј РїРѕСЂС‚ РІ СЃРµС‚РµРІРѕР№ РїРѕСЂСЏРґРѕРє Р±Р°Р№С‚РѕРІ
+    addr.sin_addr.s_addr = htonl(INADDR_ANY); // Р Р°Р·СЂРµС€Р°РµРј РїРѕРґРєР»СЋС‡РµРЅРёРµ СЃ Р»СЋР±РѕРіРѕ IP-Р°РґСЂРµСЃР°
 
-    // Привязываем сокет к адресу сервера
-    if (bind(g_server_socket, (struct sockaddr*)&addr, sizeof(addr)) == -1) { // Если привязка сокета завершилась ошибкой
+    // РџСЂРёРІСЏР·С‹РІР°РµРј СЃРѕРєРµС‚ Рє Р°РґСЂРµСЃСѓ СЃРµСЂРІРµСЂР°
+    if (bind(g_server_socket, (struct sockaddr*)&addr, sizeof(addr)) == -1) { // Р•СЃР»Рё РїСЂРёРІСЏР·РєР° СЃРѕРєРµС‚Р° Р·Р°РІРµСЂС€РёР»Р°СЃСЊ РѕС€РёР±РєРѕР№
         die("bind");
     }
 
-    // Начинаем прослушивать входящие соединения
+    // РќР°С‡РёРЅР°РµРј РїСЂРѕСЃР»СѓС€РёРІР°С‚СЊ РІС…РѕРґСЏС‰РёРµ СЃРѕРµРґРёРЅРµРЅРёСЏ
     if (listen(g_server_socket, 1) == -1) {
         die("listen");
     }
@@ -76,13 +76,13 @@ int main(void)
     printf("One client is kept active, the remaining connections are closed immediately.\n");
 
     while(1) {
-        fd_set read_fds; // Набор файловых дескрипторов для pselect
-        // Инициализируем набор файловых дескрипторов
-        FD_ZERO(&read_fds); // Очищаем набор
-        FD_SET(g_server_socket, &read_fds); // Добавляем серверный сокет
+        fd_set read_fds; // РќР°Р±РѕСЂ С„Р°Р№Р»РѕРІС‹С… РґРµСЃРєСЂРёРїС‚РѕСЂРѕРІ РґР»СЏ pselect
+        // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РЅР°Р±РѕСЂ С„Р°Р№Р»РѕРІС‹С… РґРµСЃРєСЂРёРїС‚РѕСЂРѕРІ
+        FD_ZERO(&read_fds); // РћС‡РёС‰Р°РµРј РЅР°Р±РѕСЂ
+        FD_SET(g_server_socket, &read_fds); // Р”РѕР±Р°РІР»СЏРµРј СЃРµСЂРІРµСЂРЅС‹Р№ СЃРѕРєРµС‚
         int maxfd = g_server_socket;
 
-        // Определяем максимальный дескриптор
+        // РћРїСЂРµРґРµР»СЏРµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РґРµСЃРєСЂРёРїС‚РѕСЂ
         if (g_client_socket != -1) {
             FD_SET(g_client_socket, &read_fds);
             if (g_client_socket > maxfd) {
@@ -90,44 +90,44 @@ int main(void)
             }
         }
 
-        // Ожидаем событий на сокетах с помощью pselect
+        // РћР¶РёРґР°РµРј СЃРѕР±С‹С‚РёР№ РЅР° СЃРѕРєРµС‚Р°С… СЃ РїРѕРјРѕС‰СЊСЋ pselect
         int ready = pselect(maxfd + 1, &read_fds, NULL, NULL,
             NULL, &orig_mask);
 
-        if (ready == -1) { // Если произошла ошибка
+        if (ready == -1) { // Р•СЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°
             if (errno == EINTR) {
-                /* pselect прервали сигналом (в т.ч. SIGHUP) */
+                /* pselect РїСЂРµСЂРІР°Р»Рё СЃРёРіРЅР°Р»РѕРј (РІ С‚.С‡. SIGHUP) */
                 if (g_got_sighup) {
                     printf("Received signal SIGHUP (in main loop)\n");
                     g_got_sighup = 0;
                 }
                 continue;
             }
-            else { // Другая ошибка
+            else { // Р”СЂСѓРіР°СЏ РѕС€РёР±РєР°
                 die("pselect");
             }
         }
 
-        // Проверяем новые запросы на соединение
-        if (FD_ISSET(g_server_socket, &read_fds)) { // Если серверный сокет готов к чтению
-            int new_fd = accept(g_server_socket, NULL, NULL); // Принимаем новое соединение
-            if (new_fd == -1) { // Если произошла ошибка
+        // РџСЂРѕРІРµСЂСЏРµРј РЅРѕРІС‹Рµ Р·Р°РїСЂРѕСЃС‹ РЅР° СЃРѕРµРґРёРЅРµРЅРёРµ
+        if (FD_ISSET(g_server_socket, &read_fds)) { // Р•СЃР»Рё СЃРµСЂРІРµСЂРЅС‹Р№ СЃРѕРєРµС‚ РіРѕС‚РѕРІ Рє С‡С‚РµРЅРёСЋ
+            int new_fd = accept(g_server_socket, NULL, NULL); // РџСЂРёРЅРёРјР°РµРј РЅРѕРІРѕРµ СЃРѕРµРґРёРЅРµРЅРёРµ
+            if (new_fd == -1) { // Р•СЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°
                 perror("accept");
             }
             else {
                 printf("New connection accepted\n");
-                if (g_client_socket == -1) { // Если клиентский сокет ещё не установлен
-                    g_client_socket = new_fd; // Сохраняем клиентский сокет
+                if (g_client_socket == -1) { // Р•СЃР»Рё РєР»РёРµРЅС‚СЃРєРёР№ СЃРѕРєРµС‚ РµС‰С‘ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ
+                    g_client_socket = new_fd; // РЎРѕС…СЂР°РЅСЏРµРј РєР»РёРµРЅС‚СЃРєРёР№ СЃРѕРєРµС‚
                     printf("This connection has become an active client\n");
                 }
-                else { // Если уже есть клиентский сокет
+                else { // Р•СЃР»Рё СѓР¶Рµ РµСЃС‚СЊ РєР»РёРµРЅС‚СЃРєРёР№ СЃРѕРєРµС‚
                     printf("There is already an active client, close the extra connection\n");
-                    close(new_fd); // Закрываем лишний сокет
+                    close(new_fd); // Р—Р°РєСЂС‹РІР°РµРј Р»РёС€РЅРёР№ СЃРѕРєРµС‚
                 }
             }
         }
 
-        // Проверяем наличие данных от клиента
+        // РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ РґР°РЅРЅС‹С… РѕС‚ РєР»РёРµРЅС‚Р°
         if (g_client_socket != -1 && FD_ISSET(g_client_socket, &read_fds)) {
             char buf[4096];
             ssize_t n = recv(g_client_socket, buf, sizeof(buf), 0);
