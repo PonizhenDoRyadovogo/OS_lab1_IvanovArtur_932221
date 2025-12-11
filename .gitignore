@@ -426,3 +426,35 @@ builds
 *.vcxproj.filters
 
 *.sln
+
+# === build-артефакты ядра ===
+*.o
+*.ko
+*.ko.*
+*.mod.c
+*.mod
+*.order
+*.symvers
+modules.order
+Module.symvers
+
+# kbuild служебные файлы/директории
+*.cmd
+.tmp_versions/
+.vscode/
+*.cmd
+*.d
+*.dwo
+*.gcno
+*.gcda
+
+# Всякий мусор от редакторов
+*~
+\#*\#
+*.swp
+*.swo
+
+# Скомпилированные бинарники на всякий случай
+a.out
+*.out
+*.exe
