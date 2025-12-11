@@ -8,7 +8,7 @@
 #include <linux/string.h>
 
 
-MODULE_DESCRIPTION("Tomsk State University Kernel Module");
+MODULE_DESCRIPTION("TSU Kernel Module");
 MODULE_AUTHOR("mktrhr");
 
 #define PROCFS_NAME "tsulab" // Имя файла в файловой системе /proc
