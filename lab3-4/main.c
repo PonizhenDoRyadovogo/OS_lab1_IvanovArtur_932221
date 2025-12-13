@@ -6,6 +6,8 @@
 #include <linux/uaccess.h> // Заголовок для передачи данных между пространством ядра и пользовательским пространством
 #include <linux/version.h> // Заголовок для проверки версии ядра
 #include <linux/string.h>
+#include <linux/time.h>        // mktime64
+#include <linux/timekeeping.h> // ktime_get_real_seconds
 
 
 MODULE_DESCRIPTION("TSU Kernel Module");
@@ -17,8 +19,26 @@ static struct proc_dir_entry* proc_file = NULL; // Указатель на со�
 // Чтение файла в /proc
 static ssize_t proc_read(struct file* file, char __user* buffer, size_t len, loff_t* offset)
 {
-    const char* message = "Hello from Tomsk State University!\n"; // Сообщение, возвращаемое пользователю
-    size_t msg_len = strlen(message); // Длина сообщения
+    char message[128]; // Сообщение, возвращаемое пользователю
+    size_t msg_len; // Длина сообщения
+
+    time64_t now = ktime_get_real_seconds(); // Текущее время 
+
+    time64_t halley = mktime64(2061, 7, 28, 0, 0, 0); // В следующий раз комета Галлея будет видна 28 июля 2061г
+
+    s64 diff = halley - now; // Разниица в секундах
+    long long days;
+
+    if (diff <= 0) {
+        // Если дата уже прошла, считаем 0
+        days = 0;
+    }
+    else {
+        days = diff / 86400; // 86400 секунд в сутках
+    }
+
+    msg_len = scnprintf(message, sizeof(message),
+        "Days until Halley's Comet: %lld\n", days); // Формируем сообщение
 
     if (*offset >= msg_len) { // Проверка, достигнут ли конец сообщения
         return 0; // Завершаем чтение
